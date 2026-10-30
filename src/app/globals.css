@@ -1,10 +1,12 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap");
 @import "tailwindcss";
 
-* {
-  font-family: "Poppins", sans-serif;
-  font-weight: 700;
-  color:#FFFFFF;
+@layer base {
+  * {
+    font-family: "Poppins", sans-serif;
+    font-weight: 700;
+    color: #FFFFFF;
+  }
 }
 
 .form-input {
@@ -23,4 +25,8 @@
 
 .form-input:focus {
   box-shadow: 0 0 0 2px #501794;
+}
+
+.link-highlight {
+  color: #9D5CE9 !important;
 }
