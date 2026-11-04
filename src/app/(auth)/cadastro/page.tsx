@@ -1,6 +1,7 @@
 'use client';
 
 import { registerStudent } from "@/src/services/auth";
+import { getErrorMessage } from "@/src/lib/api";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -54,12 +55,17 @@ export default function CadastroPage() {
         const senhaNormalizado = senha.trim();
         const confirmeSenhaNormalizado = confirmeSenha.trim();
 
-        await registerStudent({
-            nome: nomeNormalizado,
-            email: emailNormalizado,
-            senha: senhaNormalizado,
-            confirmeSenha: confirmeSenhaNormalizado
-        })
+        try {
+            await registerStudent({
+                nome: nomeNormalizado,
+                email: emailNormalizado,
+                senha: senhaNormalizado,
+                confirmeSenha: confirmeSenhaNormalizado
+            });
+        } catch (error) {
+            alert(getErrorMessage(error));
+            return;
+        }
 
         alert('Criado com sucesso!')
         router.push('/login')

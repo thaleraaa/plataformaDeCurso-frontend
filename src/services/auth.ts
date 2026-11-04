@@ -1,15 +1,16 @@
 import type {
-    LoginResponse,
-    RegisterStudentInput,
-    UserRole
+    RegisterStudentInput
 } from "@/src/types/auth"
+import { API_URL, readApiResponse } from "../lib/api";
 
 export async function registerStudent(dados: RegisterStudentInput) {
-    const formData = new FormData();
-    formData.append("nome", dados.nome);
-    formData.append("email", dados.email);
-    formData.append("senha", dados.senha);
-    formData.append("confirmeSenha", dados.confirmeSenha);
+    const response = await fetch(`${API_URL}/cadastro`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dados),
+    });
 
-    const response = await fetch
+    return readApiResponse(response);
 }

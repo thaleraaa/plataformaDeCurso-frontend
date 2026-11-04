@@ -1,6 +1,6 @@
 export const API_URL =
   process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") ??
-  "http://localhost:3333";
+  "http://localhost:3333/v1";
 
 
 export function handleUnauthorizedResponse(response: Response) {
