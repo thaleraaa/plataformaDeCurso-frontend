@@ -1,7 +1,22 @@
+"use client";
+
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import ProfessorShell from "@/src/components/ProfessorShell";
+import { listAulas } from "@/src/services/aula";
+import { getErrorMessage } from "@/src/lib/api";
+import type { Aula } from "@/src/types/aula";
 
 export default function ProfessorHomePage() {
+    const [aulas, setAulas] = useState<Aula[]>([]);
+    const [error, setError] = useState("");
+
+    useEffect(() => {
+        listAulas()
+            .then(setAulas)
+            .catch((requestError) => setError(getErrorMessage(requestError)));
+    }, []);
+
     return (
         <ProfessorShell>
             <div className="mx-auto max-w-6xl">
@@ -29,10 +44,26 @@ export default function ProfessorHomePage() {
                             Criar aula
                         </Link>
                     </div>
-                    <div className="flex items-center gap-3 border-t border-white/10 pt-5 text-sm font-normal text-[#91849f]">
-                        <span className="h-2 w-2 rounded-full bg-[#9d5ce9]" />
-                        Nenhuma aula criada ainda
-                    </div>
+                    {error && <p className="border-t border-white/10 pt-5 text-sm font-normal text-red-300">{error}</p>}
+                    {!error && aulas.length === 0 && (
+                        <div className="flex items-center gap-3 border-t border-white/10 pt-5 text-sm font-normal text-[#91849f]">
+                            <span className="h-2 w-2 rounded-full bg-[#9d5ce9]" />
+                            Nenhuma aula criada ainda
+                        </div>
+                    )}
+                    {aulas.length > 0 && (
+                        <div className="border-t border-white/10 pt-5">
+                            <p className="mb-4 text-sm text-[#aa8fc5]">Suas aulas</p>
+                            <div className="grid gap-3 md:grid-cols-2">
+                                {aulas.map((aula) => (
+                                    <article className="rounded-xl border border-white/10 bg-[#100324] p-4" key={aula.id}>
+                                        <h3 className="text-base">{aula.titulo}</h3>
+                                        <p className="mt-2 text-sm font-normal leading-5 text-[#b9afc5]">{aula.descricao}</p>
+                                    </article>
+                                ))}
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
         </ProfessorShell>

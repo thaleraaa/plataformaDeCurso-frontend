@@ -30,3 +30,8 @@
 .link-highlight {
   color: #9D5CE9 !important;
 }
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}

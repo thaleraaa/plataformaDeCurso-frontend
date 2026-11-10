@@ -2,13 +2,35 @@
 
 import { useState } from "react";
 import ProfessorShell from "@/src/components/ProfessorShell";
+import { createAula } from "@/src/services/aula";
+import { getErrorMessage } from "@/src/lib/api";
 
 export default function CreateLessonPage() {
     const [saved, setSaved] = useState(false);
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
 
-    function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
-        setSaved(true);
+        setSaved(false);
+        setError("");
+        setLoading(true);
+        const form = event.currentTarget;
+        const formData = new FormData(event.currentTarget);
+
+        try {
+            await createAula({
+                titulo: String(formData.get("title") ?? ""),
+                descricao: String(formData.get("description") ?? ""),
+                conteudo: String(formData.get("content") ?? ""),
+            });
+            form.reset();
+            setSaved(true);
+        } catch (requestError) {
+            setError(getErrorMessage(requestError));
+        } finally {
+            setLoading(false);
+        }
     }
 
     return (
@@ -54,10 +76,11 @@ export default function CreateLessonPage() {
                         </label>
                     </div>
 
-                    <button className="mt-8 w-full rounded-xl bg-gradient-to-r from-[#8d4ed0] to-[#3e70a1] py-3 text-sm transition-transform hover:scale-[1.01] active:scale-95" type="submit">
-                        Criar aula
+                    <button disabled={loading} className="mt-8 w-full rounded-xl bg-gradient-to-r from-[#8d4ed0] to-[#3e70a1] py-3 text-sm transition-transform hover:scale-[1.01] active:scale-95" type="submit">
+                        {loading ? "Criando..." : "Criar aula"}
                     </button>
                     {saved && <p className="mt-4 text-center text-sm font-normal text-[#b995dc]">Aula criada com sucesso!</p>}
+                    {error && <p className="mt-4 text-center text-sm font-normal text-red-300">{error}</p>}
                 </form>
             </div>
         </ProfessorShell>

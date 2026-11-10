@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { logout } from "@/src/services/auth";
+import { useState } from "react";
 
 function HomeIcon() {
     return (
@@ -21,7 +23,19 @@ function PlusIcon() {
 
 export default function ProfessorShell({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
+    const router = useRouter();
     const isCreateLesson = pathname === "/professor/criar-aula";
+    const [loading, setLoading] = useState(false);
+
+    async function handleLogout() {
+        setLoading(true);
+        try {
+            await logout();
+            router.replace("/login");
+        } finally {
+            setLoading(false);
+        }
+    }
 
     return (
         <main className="min-h-screen bg-[#100324] text-white md:flex">
@@ -56,6 +70,14 @@ export default function ProfessorShell({ children }: { children: React.ReactNode
                         Criar aula
                     </Link>
                 </nav>
+                <button
+                    className="mt-5 rounded-xl border border-white/10 px-4 py-3 text-left text-sm text-[#b9afc5] transition-colors hover:bg-white/10 hover:text-white disabled:opacity-60 md:mt-auto"
+                    disabled={loading}
+                    onClick={handleLogout}
+                    type="button"
+                >
+                    {loading ? "Saindo..." : "Sair"}
+                </button>
             </aside>
 
             <section className="flex-1 px-5 py-8 md:px-12 md:py-12">
